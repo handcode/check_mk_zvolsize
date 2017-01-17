@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Author: Jens Giessmann jg@handcode.de
+
+# this plugin collects data to check zfs volumes sizes with
+# comp.ratio, snapshot sizes, etc WIP...
+
+# Example output (without Headline) from agent:
+# zfs list -p -t volume -r -o name,volsize,used,available,usedbydataset,usedbysnapshots,compressratio
+# NAME             VOLSIZE         USED        AVAIL       USEDDS    USEDSNAP  RATIO
+# zserv/vm1    16106127360  13741113344  66381434880  11687993344  2053120000  1.27x
+# zserv/vm3    16106127360  14498553856  66381434880  12562055168  1936498688  1.18x
+# zserv/vm5    26843545600   6466097152  66381434880   5196242944  1269854208  1.26x
+# ...                                                                                                                                          \
+
+
+# get size values from all zfs volumes
+
+echo '<<<zvolsize>>>'
+
+zfs list -pH -t volume -r -o name,volsize,used,available,usedbydataset,usedbysnapshots,compressratio

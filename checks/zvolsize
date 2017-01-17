@@ -1,0 +1,66 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# Author: Jens Giessmann jg@handcode.de
+
+# this check zfs volumes sizes with comp.ratio, snapshot sizes, etc
+# WIP...
+
+# Example output (without Headline) from agent:
+# zfs list -p -t volume -r -o name,volsize,used,available,usedbydataset,usedbysnapshots,compressratio
+# NAME             VOLSIZE         USED        AVAIL       USEDDS    USEDSNAP  RATIO
+# zserv/vm1    16106127360  13741113344  66381434880  11687993344  2053120000  1.27x
+# zserv/vm3    16106127360  14498553856  66381434880  12562055168  1936498688  1.18x
+# zserv/vm5    26843545600   6466097152  66381434880   5196242944  1269854208  1.26x
+# ...
+
+def inventory_zvolsize(info):
+   for line in info:
+      disk = line[0]
+      yield disk, None
+
+
+def check_zvolsize(item, params, info):
+   for line in info:
+      if line[0] == item:
+	 volsize = int(line[1])/1024/1024
+         used = int(line[2])/1024/1024
+         available = int(line[3])/1024/1024
+         usedbydataset = int(line[4])/1024/1024
+         usedbysnapshots = int(line[5])/1024/1024
+         # cutoff last char from e.g 1.27x
+         compressratio = float(line[6][:-1])
+
+         # define warn and crit levels in relation to the volsize
+         warn_used = volsize
+         warn_snap = volsize/3
+         crit_used = volsize*2
+         crit_snap = volsize/2
+
+         # generate performance data
+	 perfdata = [ ( "size MB", volsize),
+                      ("used MB", used, warn_used, crit_used),
+                      ("free MB", available),
+                      ("used_data MB", usedbydataset),
+                      ("used_snap MB", usedbysnapshots, warn_snap, crit_snap),
+                      ("comp_ratio %", compressratio),
+         ]
+
+         # info string displayed in icinga
+         info_text = "ZVOL %s: %dM used: %dM available: %dM usedbydataset: %dM usedbysnapshots: %dM compressratio: %2.2f" % (item, volsize, used, available, usedbydataset, usedbysnapshots, compressratio)
+
+         # return status code
+         if used > crit_used:
+            return 2, info_text, perfdata
+	 elif used > warn_used:
+            return 1, info_text, perfdata
+         else:
+            return 0, info_text, perfdata
+
+check_info["zvolsize"] = {
+   'check_function':            check_zvolsize,
+   'inventory_function':        inventory_zvolsize,
+   'service_description':       'ZVOL-Sizes',
+   'has_perfdata':              True,
+}
+
