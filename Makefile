@@ -16,6 +16,7 @@ endif
 
 CMK_CHECK_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/checks/
 CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/agents/plugins/
+CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/pnp-templates/
 
 # --------------------
 # Targets
@@ -25,6 +26,7 @@ default: help
 install:   ##@test install check_mk plugin, optional OMD_SITE3=hrzg can be overwritten
 	test -d $(CMK_CHECK_DIR) && cp checks/zvolsize  $(CMK_CHECK_DIR)
 	test -d $(CMK_PLUGIN_DIR) && cp plugins/zvolsize  $(CMK_PLUGIN_DIR)
+	test -d $(CMK_TMPL_DIR) && cp templates/check_mk-zvolsize.php  $(CMK_TMPL_DIR)
 
 # --------------------
 # Thanks to dmstr:

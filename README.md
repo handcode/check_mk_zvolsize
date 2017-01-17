@@ -19,11 +19,17 @@ zserv/vm5    26843545600   6466097152  66381434880   5196242944  1269854208  1.2
 
 ### on OMD Server
 ````
-# this is required
+# check is required
 cp checks/zvolsize  /omd/sites/<SITE_NAME>/share/check_mk/checks/zvolsize
+
+# template is optional, when not present default.php from png4nagios will be used
+cp templates/check_mk-zvolsize.php /omd/sites/<SITE_NAME>/share/check_mk/pnp-templates/
 
 # this is optional to be able to download plugin. It must be present on clients not on server
 cp plugins/zvolsize /omd/sites/<SITE_NAME>/share/check_mk/agents/plugins/zvolsize
+
+
+
 
 ```  
 
