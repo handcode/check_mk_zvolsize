@@ -38,7 +38,7 @@ def check_zvolsize(item, params, info):
          crit_snap = volsize/2
 
          # generate performance data
-	 perfdata = [ ( "size MB", volsize),
+	 perfdata = [ ( "size", volsize),
                       ("used", used, warn_used, crit_used),
                       ("free", available),
                       ("used_data", usedbydataset),
