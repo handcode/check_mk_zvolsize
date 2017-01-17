@@ -39,11 +39,11 @@ def check_zvolsize(item, params, info):
 
          # generate performance data
 	 perfdata = [ ( "size MB", volsize),
-                      ("used MB", used, warn_used, crit_used),
-                      ("free MB", available),
-                      ("used_data MB", usedbydataset),
-                      ("used_snap MB", usedbysnapshots, warn_snap, crit_snap),
-                      ("comp_ratio %", compressratio),
+                      ("used", used, warn_used, crit_used),
+                      ("free", available),
+                      ("used_data", usedbydataset),
+                      ("used_snap", usedbysnapshots, warn_snap, crit_snap),
+                      ("comp_ratio", compressratio),
          ]
 
          # info string displayed in icinga
