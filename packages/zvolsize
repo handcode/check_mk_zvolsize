@@ -1,5 +1,5 @@
-{'author': 'Add your name here',
- 'description': 'Please add a description here',
+{'author': 'Jens Giessmann jg@handcode.de',
+ 'description': 'SImple check_mk plugin for monitoring zvol sizes (used, data, snaps,...',
  'download_url': 'http://example.com/zvolsize/',
  'files': {'agents': ['plugins/zvolsize'],
            'checkman': [],
@@ -10,7 +10,7 @@
            'pnp-templates': ['check_mk-zvolsize.php'],
            'web': []},
  'name': 'zvolsize',
- 'title': 'Title of zvolsize',
- 'version': '1.0',
+ 'title': 'ZVol Sizes',
+ 'version': '0.1',
  'version.min_required': '1.2.6p12',
  'version.packaged': '1.2.6p12'}
