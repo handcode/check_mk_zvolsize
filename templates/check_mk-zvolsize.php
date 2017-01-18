@@ -29,26 +29,23 @@ foreach ($NAME as $i => $n) {
 }
 
 #
-# First graph with all data
+# graph with all data
 #
-$ds_name[$i] = "Connections";
+$ds_name[$i] = "vol-sizes";
 $def[$i]  = "";
-$opt[$i]  = " --vertical-label 'Vol-Sizes' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / " . $this->MACRO['DISP_SERVICEDESC'] . "' -l 0";
+$opt[$i]  = " --vertical-label 'Vol-Sizes in MB' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / " . $this->MACRO['DISP_SERVICEDESC'] . "' -l 0";
 
-#$def[$i] .= "DEF:active=${RRD['active']} ";
-#$def[$i] .= "GPRINT:active:LAST:\"  Active   Last %5.0lf\" ";
-#$def[$i] .= "GPRINT:active:MAX:\"Max %5.0lf\" ";
-#$def[$i] .= "GPRINT:active:AVERAGE:\"Average %5.1lf\" ";
-#$def[$i] .= "COMMENT:\"\\n\" ";
+# possible vars are:
+# size|used|free|used_data|used_snap|comp_ratio
 
 foreach ($this->DS as $KEY=>$VAL) {
-    if (preg_match('/^(size|used|free|used_data|used_snap|comp_ratio)$/', $VAL['NAME'])) {
+    if (preg_match('/^(size|used|used_data|used_snap|comp_ratio)$/', $VAL['NAME'])) {
         $def[$i] .= "DEF:var${KEY}=${VAL['RRDFILE']}:${DS[$VAL['DS']]}:AVERAGE ";
         #$def[$i] .= "AREA:var${KEY}".rrd::color($KEY).":\"".$VAL['NAME']."\":STACK ";
         $def[$i] .= "LINE:var${KEY}".rrd::color($KEY).":\"".$VAL['NAME']."\" ";
-        $def[$i] .= "GPRINT:var${KEY}:LAST:\"Last %5.0lf\" ";
-        $def[$i] .= "GPRINT:var${KEY}:MAX:\"Max %5.0lf\" ";
-        $def[$i] .= "GPRINT:var${KEY}:AVERAGE:\"Average %5.1lf\" ";
+        $def[$i] .= "GPRINT:var${KEY}:LAST:\"Last %5.0lf%S\" ";
+        $def[$i] .= "GPRINT:var${KEY}:MAX:\"Max %5.0lf%S\" ";
+        $def[$i] .= "GPRINT:var${KEY}:AVERAGE:\"Average %5.1lf%S\" ";
         $def[$i] .= "COMMENT:\"\\n\" ";
     }
 }
