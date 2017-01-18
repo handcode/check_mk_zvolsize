@@ -14,9 +14,9 @@ ifneq ($(user),root)
 $(error You must be root to run this.)
 endif
 
-CMK_CHECK_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/checks/
-CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/agents/plugins/
-CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/share/check_mk/pnp-templates/
+CMK_CHECK_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/checks/
+CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/agents/plugins/
+CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/pnp-templates/
 
 # --------------------
 # Targets
@@ -27,6 +27,11 @@ install:   ##@test install check_mk plugin, optional OMD_SITE3=hrzg can be overw
 	test -d $(CMK_CHECK_DIR) && cp checks/zvolsize  $(CMK_CHECK_DIR)
 	test -d $(CMK_PLUGIN_DIR) && cp plugins/zvolsize  $(CMK_PLUGIN_DIR)
 	test -d $(CMK_TMPL_DIR) && cp templates/check_mk-zvolsize.php  $(CMK_TMPL_DIR)
+
+purge:   ##@test purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
+	test -f $(CMK_CHECK_DIR)/zvolsize && rm $(CMK_CHECK_DIR)/zvolsize
+	test -f $(CMK_PLUGIN_DIR)/zvolsize && rm $(CMK_PLUGIN_DIR)/zvolsize
+	test -f $(CMK_TMPL_DIR)/check_mk-zvolsize.php && rm $(CMK_TMPL_DIR)/check_mk-zvolsize.php
 
 # --------------------
 # Thanks to dmstr:

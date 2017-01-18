@@ -16,6 +16,46 @@ $_LINE     = '#000000';
 # Initial Logic ...
 #
 
+$i=0;
+
+$RRD = array();
+foreach ($NAME as $i => $n) {
+    $RRD[$n] = "$RRDFILE[$i]:$DS[$i]:MAX";
+    $WARN[$n] = $WARN[$i];
+    $CRIT[$n] = $CRIT[$i];
+    $MIN[$n]  = $MIN[$i];
+    $MAX[$n]  = $MAX[$i];
+    $ACT[$n]  = $ACT[$i];
+}
+
+#
+# First graph with all data
+#
+$ds_name[$i] = "Connections";
+$def[$i]  = "";
+$opt[$i]  = " --vertical-label 'Vol-Sizes' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / " . $this->MACRO['DISP_SERVICEDESC'] . "' -l 0";
+
+#$def[$i] .= "DEF:active=${RRD['active']} ";
+#$def[$i] .= "GPRINT:active:LAST:\"  Active   Last %5.0lf\" ";
+#$def[$i] .= "GPRINT:active:MAX:\"Max %5.0lf\" ";
+#$def[$i] .= "GPRINT:active:AVERAGE:\"Average %5.1lf\" ";
+#$def[$i] .= "COMMENT:\"\\n\" ";
+
+foreach ($this->DS as $KEY=>$VAL) {
+    if (preg_match('/^(size|used|free|used_data|used_snap|comp_ratio)$/', $VAL['NAME'])) {
+        $def[$i] .= "DEF:var${KEY}=${VAL['RRDFILE']}:${DS[$VAL['DS']]}:AVERAGE ";
+        #$def[$i] .= "AREA:var${KEY}".rrd::color($KEY).":\"".$VAL['NAME']."\":STACK ";
+        $def[$i] .= "LINE:var${KEY}".rrd::color($KEY).":\"".$VAL['NAME']."\" ";
+        $def[$i] .= "GPRINT:var${KEY}:LAST:\"Last %5.0lf\" ";
+        $def[$i] .= "GPRINT:var${KEY}:MAX:\"Max %5.0lf\" ";
+        $def[$i] .= "GPRINT:var${KEY}:AVERAGE:\"Average %5.1lf\" ";
+        $def[$i] .= "COMMENT:\"\\n\" ";
+    }
+}
+
+
+return;
+
 foreach ($this->DS as $KEY=>$VAL) {
 
 
@@ -65,10 +105,10 @@ foreach ($this->DS as $KEY=>$VAL) {
         $vlabel = $VAL['UNIT'];
     }
 
-    $opt[$KEY] = '--vertical-label "' . $vlabel . '" --title "' . $this->MACRO['DISP_HOSTNAME'] . ' / ' . $this->MACRO['DISP_SERVICEDESC'] . '"' . $upper . $lower;
-    $ds_name[$KEY] = $VAL['LABEL'];
+    $opt[$KEY] = '--vertical-label "VL' . $vlabel . '" --title "' . $this->MACRO['DISP_HOSTNAME'] . ' / ' . $this->MACRO['DISP_SERVICEDESC'] . '"' . $upper . $lower;
+    $ds_name[$KEY] = $VAL['LABEL'] . '-X';
     $def[$KEY]  = rrd::def     ("var1", $VAL['RRDFILE'], $VAL['DS'], "AVERAGE");
-    $def[$KEY] .= rrd::gradient("var1", "cccccc", "333333", rrd::cut($VAL['NAME'],16), 20);
+    $def[$KEY] .= rrd::gradient("var1", "ccccff", "cccc44", rrd::cut($VAL['NAME'],16), 20);
     $def[$KEY] .= rrd::line1   ("var1", $_LINE );
     #$def[$KEY] .= rrd::gprint  ("var1", array("LAST","MAX","AVERAGE"), "%3.4lf %S".$VAL['UNIT']);
     $def[$KEY] .= rrd::gprint  ("var1", array("LAST","MAX","AVERAGE"), "%3.0lf MB");
