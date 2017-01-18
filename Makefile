@@ -34,7 +34,7 @@ purge:   ##@test purge check_mk plugin files, optional OMD_SITE3=hrzg can be ove
 	test -f $(CMK_CHECK_DIR)/zvolsize && rm $(CMK_CHECK_DIR)/zvolsize
 	test -f $(CMK_PLUGIN_DIR)/zvolsize && rm $(CMK_PLUGIN_DIR)/zvolsize
 	test -f $(CMK_TMPL_DIR)/check_mk-zvolsize.php && rm $(CMK_TMPL_DIR)/check_mk-zvolsize.php
-    test -f $(CMK_PKG_DIR)/zvolsize && rm $(CMK_PKG_DIR)/zvolsize
+	test -f $(CMK_PKG_DIR)/zvolsize && rm $(CMK_PKG_DIR)/zvolsize
 
 # --------------------
 # Thanks to dmstr:
