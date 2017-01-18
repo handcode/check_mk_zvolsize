@@ -23,7 +23,7 @@ foreach ($NAME as $i => $n) {
     $ACT[$n]  = $ACT[$i];
 }
 
-$zvol_name = explode(' ', $this->MACRO['DISP_SERVICEDESC'])[0];
+$zvol_name = explode(' ', $this->MACRO['DISP_SERVICEDESC'])[1];
 
 
 # get logenst name for indenting
@@ -39,7 +39,7 @@ foreach ($this->DS as $KEY=>$VAL) {
 $ds_name[$i] = "vol-sizes";
 $def[$i]  = "";
 #$opt[$i]  = " --vertical-label 'Vol-Sizes in MB' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / " . $this->MACRO['DISP_SERVICEDESC'] . "' -l 0";
-$opt[$i]  = " --vertical-label 'ZVol-Sizes in MB' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / " . $zvol_name . "' -l 0";
+$opt[$i]  = " --vertical-label 'ZVol-Sizes in MB' --title '" . $this->MACRO['DISP_HOSTNAME'] . " " . $zvol_name . "' -l 0";
 
 # possible vars are:
 # size|used|free|used_data|used_snap|comp_ratio
@@ -49,7 +49,10 @@ foreach ($this->DS as $KEY=>$VAL) {
         $name = str_pad($VAL['NAME'], $name_lenght);
         $def[$i] .= "DEF:var${KEY}=${VAL['RRDFILE']}:${DS[$VAL['DS']]}:AVERAGE ";
         #$def[$i] .= "AREA:var${KEY}".rrd::color($KEY).":\"". $name ."\":STACK ";
-        
+        if ($VAL['NAME'] == 'used' && !empty($VAL['CRIT'])) {
+            #$def[$i] .= "LINE1:" . $VAL['CRIT'] . "#f00:\"critical\\n\" ";
+            $def[$i] .= "LINE1:" . $VAL['CRIT'] . "#f00:\"\" ";
+        }
         if ($VAL['NAME'] == 'size') {
             #$def[$i] .= "AREA:var${KEY}#d4d4ff:\"". $name ."\" ";
             #$def[$i] .= "HRULE:" .  . "#900:\"\" ";
@@ -69,7 +72,7 @@ foreach ($this->DS as $KEY=>$VAL) {
 ++$i;
 $ds_name[$i] = "vol-sizes";
 $def[$i]  = "";
-$opt[$i]  = " --vertical-label 'compression ratio %' --title '" . $this->MACRO['DISP_HOSTNAME'] . " / $zvol_name' -l 0";
+$opt[$i]  = " --vertical-label 'compression ratio %' --title '" . $this->MACRO['DISP_HOSTNAME'] . " " . $zvol_name . "' -l 0";
 foreach ($this->DS as $KEY=>$VAL) {
     if ($VAL['NAME'] == 'comp_ratio') {
         $def[$i] .= "DEF:var${KEY}=${VAL['RRDFILE']}:${DS[$VAL['DS']]}:AVERAGE ";
