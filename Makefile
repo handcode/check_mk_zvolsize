@@ -1,6 +1,6 @@
 # Makefile for docker-compose stacks
 
-.PHONY: install 
+.PHONY: install purge package pkg release
 
 # --------------------
 # Defines
@@ -18,23 +18,39 @@ CMK_CHECK_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/checks/
 CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/agents/plugins/
 CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/pnp-templates/
 CMK_PKG_DIR = /omd/sites/$(OMD_SITE)/var/check_mk/packages/
+CMK_REL_TMP_DIR = /omd/sites/$(OMD_SITE)/release-tmp
 
 # --------------------
 # Targets
 # --------------------
 default: help
 
-install:   ##@test install check_mk plugin, optional OMD_SITE3=hrzg can be overwritten
+install:   ##@dev install check_mk plugin, optional OMD_SITE3=hrzg can be overwritten
 	test -d $(CMK_CHECK_DIR) && cp checks/zvolsize  $(CMK_CHECK_DIR)
 	test -d $(CMK_PLUGIN_DIR) && cp plugins/zvolsize  $(CMK_PLUGIN_DIR)
 	test -d $(CMK_TMPL_DIR) && cp templates/check_mk-zvolsize.php  $(CMK_TMPL_DIR)
 	test -d $(CMK_PKG_DIR) && cp packages/zvolsize  $(CMK_PKG_DIR)
 
-purge:   ##@test purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
+purge:   ##@dev purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
 	test -f $(CMK_CHECK_DIR)/zvolsize && rm $(CMK_CHECK_DIR)/zvolsize
 	test -f $(CMK_PLUGIN_DIR)/zvolsize && rm $(CMK_PLUGIN_DIR)/zvolsize
 	test -f $(CMK_TMPL_DIR)/check_mk-zvolsize.php && rm $(CMK_TMPL_DIR)/check_mk-zvolsize.php
 	test -f $(CMK_PKG_DIR)/zvolsize && rm $(CMK_PKG_DIR)/zvolsize
+
+pkg: ##@pkg alias for package
+pkg: package
+
+package: ##@pkg build check_mk package from installed repo files
+package: install
+	echo "build check_mk package from installed repo files"
+	su - cfa -c 'mkdir -p release-tmp && cd release-tmp && cmk -vP pack zvolsize && pwd'
+
+release: ##@pkg build check_mk package and copy *.mkp file to repo
+release: package
+	echo "move created package file to repo"
+	test -d $(CMK_REL_TMP_DIR) && test -f $(CMK_REL_TMP_DIR)/zvolsize-*.mkp && chown root:root $(CMK_REL_TMP_DIR)/zvolsize-*.mkp && mv $(CMK_REL_TMP_DIR)/zvolsize-*.mkp ./releases/ && rmdir $(CMK_REL_TMP_DIR)
+	echo "DONE, if you wish, please commit created mkp file to repo"
+	ls -latr ./releases/*.mkp
 
 # --------------------
 # Thanks to dmstr:
