@@ -3,9 +3,9 @@
 plugin to check/collect zvol (zfs volumes) sizes with volsize, used, comp.ratio, snapshot sizes, etc
 usecase: monitor sparse zvols for e.g. VMs
 
-WIP...
+WIP... [Public Repo](ttps://github.com/handcode/check_mk_zvolsize)
 
-Example output (without Headline) from agent plugin:
+## Example output (without Headline) from agent plugin:
 
 ```
 zfs list -p -t volume -r -o name,volsize,used,available,usedbydataset,usedbysnapshots,compressratio
