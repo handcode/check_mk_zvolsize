@@ -1,6 +1,7 @@
 # check_mk zvolsize plugin
 
-This check_mk checks monitor zfs volumes sizes with volsize, used, comp.ratio, snapshot sizes, etc
+plugin to check/collect zvol (zfs volumes) sizes with volsize, used, comp.ratio, snapshot sizes, etc
+usecase: monitor sparse zvols for e.g. VMs
 
 WIP...
 
@@ -18,13 +19,21 @@ zserv/vm5    26843545600   6466097152  66381434880   5196242944  1269854208  1.2
 ## Install
 
 ### OMD Server Install
+
+#### check_mk package:
+```
+cmk -vP releases/zvolsize-<VERSION>.mkp
+```
+
+#### manually:
 ```
 cp checks/zvolsize /omd/sites/$(OMD_SITE)/local/share/check_mk/checks/
 cp plugins/zvolsize /omd/sites/$(OMD_SITE)/local/share/check_mk/agents/plugins/
 cp templates/check_mk-zvolsize.php /omd/sites/$(OMD_SITE)/local/share/check_mk/pnp-templates/
 cp packages/zvolsize /omd/sites/$(OMD_SITE)/var/check_mk/packages/
 ```  
-Or better -> use make target ;-)
+
+#### use make target:
 ```
 usage: make [target ...]
 
@@ -47,7 +56,10 @@ cp plugins/zvolsize /usr/lib/check_mk_agent/plugins/zvolsize
 ```
 Or download plugin from OMD Server, or rollout plugin with puppet ;-)
 
-### check_mk Packages
+
+
+
+### check_mk package cheatsheet
 #### pack check_mk package (see make target above)
 
 ```
@@ -77,7 +89,7 @@ Available commands are:
 
    -v  enables verbose output
 
-Package files are located in /omd/sites/cfa/var/check_mk/packages/.
+Package files are located in /omd/sites/$(OMD_SITE)/var/check_mk/packages/.
 ```
 
 
