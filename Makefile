@@ -19,6 +19,7 @@ CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/agents/plugins/
 CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/pnp-templates/
 CMK_PKG_DIR = /omd/sites/$(OMD_SITE)/var/check_mk/packages/
 CMK_REL_TMP_DIR = /omd/sites/$(OMD_SITE)/release-tmp
+CMK_WATO_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/web/plugins/wato/
 
 # --------------------
 # Targets
@@ -30,12 +31,14 @@ install:   ##@dev install check_mk plugin, optional OMD_SITE3=hrzg can be overwr
 	test -d $(CMK_PLUGIN_DIR) && cp plugins/zvolsize  $(CMK_PLUGIN_DIR)
 	test -d $(CMK_TMPL_DIR) && cp templates/check_mk-zvolsize.php  $(CMK_TMPL_DIR)
 	test -d $(CMK_PKG_DIR) && cp packages/zvolsize  $(CMK_PKG_DIR)
+	test -d $(CMK_WATO_PLUGIN_DIR) && cp web/plugins/wato/check_parameters_zvolsize.py  $(CMK_WATO_PLUGIN_DIR)
 
 purge:   ##@dev purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
 	test -f $(CMK_CHECK_DIR)/zvolsize && rm $(CMK_CHECK_DIR)/zvolsize
 	test -f $(CMK_PLUGIN_DIR)/zvolsize && rm $(CMK_PLUGIN_DIR)/zvolsize
 	test -f $(CMK_TMPL_DIR)/check_mk-zvolsize.php && rm $(CMK_TMPL_DIR)/check_mk-zvolsize.php
 	test -f $(CMK_PKG_DIR)/zvolsize && rm $(CMK_PKG_DIR)/zvolsize
+	test -f $(CMK_WATO_PLUGIN_DIR)/check_parameters_zvolsize.py && rm $(CMK_WATO_PLUGIN_DIR)/check_parameters_zvolsize.py
 
 pkg: ##@pkg alias for package
 pkg: package

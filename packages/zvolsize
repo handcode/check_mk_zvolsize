@@ -8,7 +8,7 @@
            'inventory': [],
            'notifications': [],
            'pnp-templates': ['check_mk-zvolsize.php'],
-           'web': []},
+           'web': ['plugins/wato/check_parameters_zvolsize.py']},
  'name': 'zvolsize',
  'title': 'ZVol Sizes',
  'version': '0.1',
