@@ -1,9 +1,11 @@
 # check_mk zvolsize plugin
 
-plugin to check/collect zvol (zfs volumes) sizes with volsize, used, comp.ratio, snapshot sizes, etc
-usecase: monitor sparse zvols for e.g. VMs
+plugin to check/collect zvol (zfs volume) sizes with volsize, used size, snapshot sizes and comp.ratio
+usecase: monitor used diskspace (including snapshots) for sparse zvols when overcommitting diskspace for VMs. 
 
-WIP... [Public Repo](ttps://github.com/handcode/check_mk_zvolsize)
+### Links:
+- [Public github repo](https://github.com/handcode/check_mk_zvolsize)
+- ["Writing checks for Check_MK"](https://mathias-kettner.de/checkmk_writing_checks.html)
 
 ## Example output (without Headline) from agent plugin:
 

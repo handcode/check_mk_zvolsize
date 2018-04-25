@@ -1,15 +1,8 @@
 <?php
 
-# Template fir check_mk-zvolsize graphs
-
-# Based on:
-# Default Template used if no other template is found.
-# Copyright (c) 2006-2010 Joerg Linge (http://www.pnp4nagios.org)
-
-# Define some colors ..
+# Template for check_mk-zvolsize graphs
 #
-# Initial Logic ...
-#
+# Author: Jens Giessmann jg@handcode.de
 
 $i=0;
 
@@ -26,15 +19,16 @@ foreach ($NAME as $i => $n) {
 $zvol_name = explode(' ', $this->MACRO['DISP_SERVICEDESC'])[1];
 
 
-# get logenst name for indenting
-$name_lenght = 0;
+# get longest name for indenting
+$name_length = 0;
 foreach ($this->DS as $KEY=>$VAL) {
-    if ($name_lenght < strlen($VAL['NAME'])) {
-        $name_lenght = strlen($VAL['NAME']);
+    if ($name_length < strlen($VAL['NAME'])) {
+        $name_length = strlen($VAL['NAME']);
     }
 }
+
 #
-# graph with all data
+# graph for sizes
 #
 $ds_name[$i] = "vol-sizes";
 $def[$i]  = "";
@@ -46,7 +40,7 @@ $opt[$i]  = " --vertical-label 'ZVol-Sizes in MB' --title '" . $this->MACRO['DIS
 
 foreach ($this->DS as $KEY=>$VAL) {
     if (preg_match('/^(size|used|used_data|used_snap)$/', $VAL['NAME'])) {
-        $name = str_pad($VAL['NAME'], $name_lenght);
+        $name = str_pad($VAL['NAME'], $name_length);
         $def[$i] .= "DEF:var${KEY}=${VAL['RRDFILE']}:${DS[$VAL['DS']]}:AVERAGE ";
         #$def[$i] .= "AREA:var${KEY}".rrd::color($KEY).":\"". $name ."\":STACK ";
         if ($VAL['NAME'] == 'used' && !empty($VAL['CRIT'])) {
@@ -68,7 +62,7 @@ foreach ($this->DS as $KEY=>$VAL) {
     }
 }
 
-# graph fpr compression-ratio
+# graph for compression-ratio
 ++$i;
 $ds_name[$i] = "vol-sizes";
 $def[$i]  = "";

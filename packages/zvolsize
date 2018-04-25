@@ -1,6 +1,6 @@
 {'author': 'Jens Giessmann jg@handcode.de',
- 'description': 'SImple check_mk plugin for monitoring zvol sizes (used, data, snaps,...',
- 'download_url': 'http://example.com/zvolsize/',
+ 'description': 'Simple check_mk plugin for monitoring zvol (zfs volumes) sizes (used, data, snaps,...',
+ 'download_url': 'https://github.com/handcode/check_mk_zvolsize',
  'files': {'agents': ['plugins/zvolsize'],
            'checkman': [],
            'checks': ['zvolsize'],
