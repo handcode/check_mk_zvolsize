@@ -14,7 +14,7 @@ register_check_parameters(
                 help = _("Levels for warning and critical as decimal"),
                 elements = [
                     Float(title = _("Warning used by data and snapshots"), unit = _("decimal"), default_value = 1.5),
-                    Float(title = _("Critical used bc data and snapshots"), unit = _("decimal"), default_value = 2.0),
+                    Float(title = _("Critical used by data and snapshots"), unit = _("decimal"), default_value = 2.0),
                     Float(title = _("Warning used by snapshots"), unit = _("decimal"), default_value = 0.5),
                     Float(title = _("Critical used by snapshots"), unit = _("decimal"), default_value = 1.0),
                 ])),
