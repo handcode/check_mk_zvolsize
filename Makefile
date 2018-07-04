@@ -1,4 +1,7 @@
-# Makefile for docker-compose stacks
+# Makefile for check_mk zvolsize plugin
+
+# ENV OMD_SITE with valid omd site name must be set!
+# export OMD_SITE=cfa
 
 .PHONY: install purge package pkg release
 
@@ -8,32 +11,35 @@
 # check user and decided wether we should execute commands with sudo prefix?
 user = $(shell whoami)
 PWD ?= $(shell pwd)
-OMD_SITE = cfa
+
+
+guard-%:
+	@ if [ -z '${${*}}' ]; then echo 'Environment variable $* not set!' && exit 1; fi
 
 ifneq ($(user),root)
 $(error You must be root to run this.)
 endif
 
-CMK_CHECK_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/checks/
-CMK_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/agents/plugins/
-CMK_TMPL_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/pnp-templates/
-CMK_PKG_DIR = /omd/sites/$(OMD_SITE)/var/check_mk/packages/
-CMK_REL_TMP_DIR = /omd/sites/$(OMD_SITE)/release-tmp
-CMK_WATO_PLUGIN_DIR = /omd/sites/$(OMD_SITE)/local/share/check_mk/web/plugins/wato/
+CMK_CHECK_DIR = /omd/sites/${OMD_SITE}/local/share/check_mk/checks/
+CMK_PLUGIN_DIR = /omd/sites/${OMD_SITE}/local/share/check_mk/agents/plugins/
+CMK_TMPL_DIR = /omd/sites/${OMD_SITE}/local/share/check_mk/pnp-templates/
+CMK_PKG_DIR = /omd/sites/${OMD_SITE}/var/check_mk/packages/
+CMK_REL_TMP_DIR = /omd/sites/${OMD_SITE}/release-tmp
+CMK_WATO_PLUGIN_DIR = /omd/sites/${OMD_SITE}/local/share/check_mk/web/plugins/wato/
 
 # --------------------
 # Targets
 # --------------------
 default: help
 
-install:   ##@dev install check_mk plugin, optional OMD_SITE3=hrzg can be overwritten
+install: guard-OMD_SITE ##@dev install check_mk plugin, optional OMD_SITE3=hrzg can be overwritten
 	test -d $(CMK_CHECK_DIR) && cp checks/zvolsize  $(CMK_CHECK_DIR)
 	test -d $(CMK_PLUGIN_DIR) && cp plugins/zvolsize  $(CMK_PLUGIN_DIR)
 	test -d $(CMK_TMPL_DIR) && cp templates/check_mk-zvolsize.php  $(CMK_TMPL_DIR)
 	test -d $(CMK_PKG_DIR) && cp packages/zvolsize  $(CMK_PKG_DIR)
 	test -d $(CMK_WATO_PLUGIN_DIR) && cp web/plugins/wato/check_parameters_zvolsize.py  $(CMK_WATO_PLUGIN_DIR)
 
-purge:   ##@dev purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
+purge:  guard-OMD_SITE ##@dev purge check_mk plugin files, optional OMD_SITE3=hrzg can be overwritten
 	test -f $(CMK_CHECK_DIR)/zvolsize && rm $(CMK_CHECK_DIR)/zvolsize
 	test -f $(CMK_PLUGIN_DIR)/zvolsize && rm $(CMK_PLUGIN_DIR)/zvolsize
 	test -f $(CMK_TMPL_DIR)/check_mk-zvolsize.php && rm $(CMK_TMPL_DIR)/check_mk-zvolsize.php
@@ -44,12 +50,12 @@ pkg: ##@pkg alias for package
 pkg: package
 
 package: ##@pkg build check_mk package from installed repo files
-package: install
+package: guard-OMD_SITE install
 	echo "build check_mk package from installed repo files"
-	su - cfa -c 'mkdir -p release-tmp && cd release-tmp && cmk -vP pack zvolsize && pwd'
+	su - ${OMD_SITE} -c 'mkdir -p release-tmp && cd release-tmp && cmk -vP pack zvolsize && pwd'
 
 release: ##@pkg build check_mk package and copy *.mkp file to repo
-release: package
+release: guard-OMD_SITE package
 	echo "move created package file to repo"
 	test -d $(CMK_REL_TMP_DIR) && test -f $(CMK_REL_TMP_DIR)/zvolsize-*.mkp && chown root:root $(CMK_REL_TMP_DIR)/zvolsize-*.mkp && mv $(CMK_REL_TMP_DIR)/zvolsize-*.mkp ./releases/ && rmdir $(CMK_REL_TMP_DIR)
 	echo "DONE, if you wish, please commit created mkp file to repo"
