@@ -52,7 +52,7 @@ pkg: package
 package: ##@pkg build check_mk package from installed repo files
 package: guard-OMD_SITE install
 	echo "build check_mk package from installed repo files"
-	su - ${OMD_SITE} -c 'mkdir -p release-tmp && cd release-tmp && cmk -vP pack zvolsize && pwd'
+	su - ${OMD_SITE} -c "mkdir -p $(CMK_REL_TMP_DIR) && cd $(CMK_REL_TMP_DIR) && cmk -vP pack zvolsize && pwd"
 
 release: ##@pkg build check_mk package and copy *.mkp file to repo
 release: guard-OMD_SITE package

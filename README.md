@@ -24,7 +24,7 @@ zserv/vm5    26843545600   6466097152  66381434880   5196242944  1269854208  1.2
 
 #### check_mk package:
 ```
-cmk -vP releases/zvolsize-<VERSION>.mkp
+cmk -vP install releases/zvolsize-<VERSION>.mkp
 ```
 
 #### manually:
