@@ -1,10 +1,10 @@
 #!/usr/bin/python
-# -*- encoding: utf-8; py-indent-offset: 4 -*-
+# -*- encoding: utf-8; python-indent-offset: 4 -*-
 
 # Author: Jens Giessmann jg@handcode.de
 
 # this check zfs volumes sizes with comp.ratio, snapshot sizes, etc
-# WIP...
+
 
 # Example output (without Headline) from agent:
 # zfs list -p -t volume -r -o name,volsize,used,available,usedbydataset,usedbysnapshots,compressratio
@@ -21,63 +21,62 @@ factory_settings["zvolsize_default_values"] = {
 }
 
 def inventory_zvolsize(info):
-   for line in info:
-      disk = line[0]
-      # use default variable as parameter.
-      yield disk, zvolsize_default_values
+    for line in info:
+        disk = line[0]
+        # use default variable as parameter.
+        yield disk, zvolsize_default_values
 
 
 def check_zvolsize(item, params, info):
-   # unpack check parameters
-   warn_used, crit_used, warn_snap, crit_snap = params['levels']
+    # unpack check parameters
+    warn_used, crit_used, warn_snap, crit_snap = params['levels']
 
-   for line in info:
-      if line[0] == item:
-	 volsize = int(line[1])/1024/1024
-         used = int(line[2])/1024/1024
-         available = int(line[3])/1024/1024
-         usedbydataset = int(line[4])/1024/1024
-         usedbysnapshots = int(line[5])/1024/1024
-         # cutoff last char from e.g 1.27x
-         compressratio = float(line[6][:-1])
+    for line in info:
+        if line[0] == item:
+            volsize = int(line[1])/1024/1024
+            used = int(line[2])/1024/1024
+            available = int(line[3])/1024/1024
+            usedbydataset = int(line[4])/1024/1024
+            usedbysnapshots = int(line[5])/1024/1024
+            # cutoff last char from e.g 1.27x
+            compressratio = float(line[6][:-1])
 
-         # define warn and crit levels in relation to the volsize
-         warn_used_level = volsize*warn_used
-         warn_snap_level = volsize*warn_snap
-         crit_used_level = volsize*crit_used
-         crit_snap_level = volsize*crit_snap
+            # define warn and crit levels in relation to the volsize
+            warn_used_level = volsize*warn_used
+            warn_snap_level = volsize*warn_snap
+            crit_used_level = volsize*crit_used
+            crit_snap_level = volsize*crit_snap
 
-         # generate performance data
-	 perfdata = [ ( "size", volsize),
-                      ("used", used, warn_used_level, crit_used_level),
-                      ("free", available),
-                      ("used_data", usedbydataset),
-                      ("used_snap", usedbysnapshots, warn_snap_level, crit_snap_level),
-                      ("comp_ratio", compressratio),
-                      ]
+            # generate performance data
+            perfdata = [ ( "size", volsize),
+                         ("used", used, warn_used_level, crit_used_level),
+                         ("free", available),
+                         ("used_data", usedbydataset),
+                         ("used_snap", usedbysnapshots, warn_snap_level, crit_snap_level),
+                         ("comp_ratio", compressratio),
+                        ]
 
-         # info string displayed in icinga
-         info_text = "ZVOL %s: %dM used: %dM available: %dM usedbydataset: %dM usedbysnapshots: %dM compressratio: %2.2f (levels: %2.2f %2.2f %2.2f %2.2f)" % (item, volsize, used, available, usedbydataset, usedbysnapshots, compressratio, warn_used, crit_used, warn_snap, crit_snap)
+            # info string displayed in icinga
+            info_text = "ZVOL %s: %dM used: %dM available: %dM usedbydataset: %dM usedbysnapshots: %dM compressratio: %2.2f (levels: %2.2f %2.2f %2.2f %2.2f)" % (item, volsize, used, available, usedbydataset, usedbysnapshots, compressratio, warn_used, crit_used, warn_snap, crit_snap)
 
-         # return status code
-         if used > crit_used_level:
-            return 2, info_text, perfdata
-         elif usedbysnapshots > crit_snap_level:
-            return 2, info_text, perfdata
-         elif used > warn_used_level:
-            return 1, info_text, perfdata
-         elif usedbysnapshots > warn_snap_level:
-            return 1, info_text, perfdata
-         else:
-            return 0, info_text, perfdata
+            # return status code
+            if used > crit_used_level:
+                return 2, info_text, perfdata
+            elif usedbysnapshots > crit_snap_level:
+                return 2, info_text, perfdata
+            elif used > warn_used_level:
+                return 1, info_text, perfdata
+            elif usedbysnapshots > warn_snap_level:
+                return 1, info_text, perfdata
+            else:
+                return 0, info_text, perfdata
 
 
 check_info["zvolsize"] = {
-   'check_function':            check_zvolsize,
-   'inventory_function':        inventory_zvolsize,
-   'service_description':       'ZVOL-Sizes %s',
-   'default_levels_variable':   'zvolsize_default_values',
-   'group':                     'zvolsize',
-   'has_perfdata':              True,
+    'check_function':            check_zvolsize,
+    'inventory_function':        inventory_zvolsize,
+    'service_description':       'ZVOL-Sizes %s',
+    'default_levels_variable':   'zvolsize_default_values',
+    'group':                     'zvolsize',
+    'has_perfdata':              True,
 }
-

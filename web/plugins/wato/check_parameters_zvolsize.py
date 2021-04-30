@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8; py-indent-offset: 4 -*-
+# -*- encoding: utf-8; python-indent-offset: 4 -*-
 
 # Author: Jens Giessmann jg@handcode.de
 
@@ -26,5 +26,3 @@ register_check_parameters(
     ),
     'dict',
 )
-
-
